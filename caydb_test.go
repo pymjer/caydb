@@ -28,6 +28,10 @@ func (e *Entity) String() string {
 	return fmt.Sprintf("Entity{ID:%s, Type:%s, Name:%s, Location:%s, Remark:%s, Count:%d}", e.ID, e.Type, e.Name, e.Location, e.Remark, e.Count)
 }
 
+func TestWriteQuads(t *testing.T) {
+	WriteQuads(store, Entity{ID: quad.IRI(fmt.Sprintf("一号柜:%d", 101)), Type: "容器", Location: "主卧"})
+}
+
 func TestCayleySchemaCreate(t *testing.T) {
 	Entitylist := []Entity{
 		{ID: "一号柜", Type: "容器", Location: "主卧"},

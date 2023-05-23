@@ -8,7 +8,12 @@ import (
 	"github.com/cayleygraph/cayley/graph"
 	_ "github.com/cayleygraph/cayley/graph/kv/bolt"
 	_ "github.com/cayleygraph/cayley/graph/sql/mysql"
+	"github.com/cayleygraph/cayley/schema"
+	"github.com/cayleygraph/quad"
 )
+
+var defaultWriter graph.BatchWriter
+var defaultSchemaCfg *schema.Config
 
 func NewCayleyDB(backend string, address string) (store *cayley.Handle) {
 	log.Println("Try cayley backend connection")
@@ -39,4 +44,21 @@ func NewCayleyDB(backend string, address string) (store *cayley.Handle) {
 		os.Exit(0)
 	}
 	return store
+}
+
+func CleanUp() {
+	if defaultWriter != nil {
+		defaultWriter.Close()
+	}
+}
+
+func WriteQuads(store *cayley.Handle, o interface{}) (id quad.Value, err error) {
+	if defaultWriter == nil {
+		defaultWriter = graph.NewWriter(store)
+	}
+	if defaultSchemaCfg == nil {
+		defaultSchemaCfg = schema.NewConfig()
+	}
+	id, err = defaultSchemaCfg.WriteAsQuads(defaultWriter, o)
+	return
 }
