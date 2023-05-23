@@ -72,7 +72,7 @@ func TestHelloWorld(t *testing.T) {
 	// Now we iterate over results. Arguments:
 	// 1. Optional context used for cancellation.
 	// 2. Quad store, but we can omit it because we have already built path with it.
-	err := p.Iterate(nil).EachValue(nil, func(value quad.Value) {
+	err := p.Iterate(context.TODO()).EachValue(store, func(value quad.Value) {
 		nativeValue := quad.NativeOf(value) // this converts RDF values to normal Go types
 		fmt.Println(nativeValue)
 	})
@@ -90,6 +90,9 @@ func TestCayleyGizmo(t *testing.T) {
 		nativeValue := quad.NativeOf(value) // this converts RDF values to normal Go types
 		fmt.Println(nativeValue)
 	})
+	if err != nil {
+		t.Fatal(err)
+	}
 	// 查询所有物品
 	// g.V().has('<type>','<物品>').all()
 	t.Log("查询所有物品")
@@ -98,6 +101,9 @@ func TestCayleyGizmo(t *testing.T) {
 		nativeValue := quad.NativeOf(value) // this converts RDF values to normal Go types
 		fmt.Println(nativeValue)
 	})
+	if err != nil {
+		t.Fatal(err)
+	}
 	// 查询一号柜的物品
 	// g.V("<一号柜>").in().all()
 	t.Log("查询一号柜的物品")
